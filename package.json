@@ -1,7 +1,7 @@
 {
   "name": "githubprofiles",
   "version": "1.0.0",
-  "description": "Github profile viewer built in React, Flux, Webpack",
+  "description": "A quiz app built in React, Flux, Webpack",
   "main": "index.js",
   "scripts": {
     "test": "test"
