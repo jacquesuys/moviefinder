@@ -1,3 +1,2 @@
-# githubProfiles
-
-An application to browse github profiles and their repos
+# quiz
+A simple quiz app prototype

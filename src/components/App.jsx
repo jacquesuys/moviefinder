@@ -1,77 +1,68 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import Profile from './github/Profile.jsx';
-import Search from './github/Search.jsx';
+import QuestionList from './quiz/QuestionList.jsx';
+import ScoreBoard from './quiz/Scores.jsx';
+import Results from './quiz/Results.jsx';
 
 class App extends Component {
-	constructor(props){
+	constructor(props) {
 		super(props);
+
 		this.state = {
-			username: 'jacquesuys',
-			userData: [],
-			userRepos: [],
-			perPage: 5
+			questions: [
+			{ id: 1,
+				text: 'What is your name?',
+				choices: [
+					{id: 'a', text: 'Michael'},
+					{id: 'b', text: 'Jacques'},
+					{id: 'c', text: 'Steven'}
+				],
+				correct: 'b'
+			},
+			{ id: 2,
+				text: 'What is your mother\'s name?',
+				choices: [
+					{id: 'a', text: 'Mother'},
+					{id: 'b', text: 'Deidre'},
+					{id: 'c', text: 'Moeder'}
+				],
+				correct: 'b'
+			},
+			{ id: 3,
+				text: 'What is your dog\'s name?',
+				choices: [
+					{id: 'a', text: 'Bonnie'},
+					{id: 'b', text: 'Vabond'},
+					{id: 'c', text: 'Brakkie'}
+				],
+				correct: 'b'
+			}],
+			score: 0,
+			current: 1
 		}
 	}
 
-	getUserData() {
-		$.ajax({
-			url: `https://api.github.com/users/${this.state.username}?client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}`,
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
-				this.setState({userData: data});
-			}.bind(this),
-			error: function(xhr, status, error) {
-				console.error(error);
-			}.bind(this)
-		});
+	setCurrent(current){
+		this.setState({current: current});
 	}
 
-	getUserRepos() {
-		$.ajax({
-			url: `https://api.github.com/users/${this.state.username}/repos?per_page=${this.props.perPage}&client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}`,
-			dataType: 'json',
-			cache: false,
-			success: function(data) {
-				this.setState({userRepos: data});
-			}.bind(this),
-			error: function(xhr, status, error) {
-				console.error(error);
-			}.bind(this)
-		});
-	}
-
-	handleFormSubmit(username) {
-		this.setState({username: username}, function() {
-			this.getUserData();
-			this.getUserRepos();
-		});
-	}
-
-	componentDidMount() {
-		this.getUserData();
-		this.getUserRepos();
+	setScore(score){
+		this.setState({score: score});
 	}
 
 	render() {
+		if(this.state.current > this.state.questions.length) {
+			var score = <Results {...this.state} /> 
+		} else {
+			var score = <ScoreBoard {...this.state} />
+		}
 		return (
 			<div>
-				<Search onFormSubmit={this.handleFormSubmit.bind(this)} />
-				<Profile {...this.state} />
+				{score}
+				<QuestionList {...this.state} setCurrent={this.setCurrent.bind(this)} setScore={this.setScore.bind(this)} />
 			</div>
 		)
 	}
-}
-
-App.propTypes = {
-	clientId: React.PropTypes.string,
-	clientSecret: React.PropTypes.string
-}
-
-App.defaultProps = {
-	clientId: '1d36be2da3758e743804',
-	clientSecret: '944a4aeedb87cd05ea50434bb02e4ed883558aab'
 }
 
 export default App;
